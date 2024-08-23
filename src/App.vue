@@ -1,20 +1,36 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import axios from "axios";
+
+const options = {
+  method: "GET",
+  url: "https://api-football-v1.p.rapidapi.com/v2/odds/league/865927/bookmaker/5",
+  params: { page: "2" },
+  headers: {
+    "x-rapidapi-key": "7857f3e008mshdbc29ebea76e69ep15fe69jsn9484898f9ab3",
+    "x-rapidapi-host": "api-football-v1.p.rapidapi.com",
+  },
+};
+
+try {
+  const response = await axios.request(options);
+  console.log(response.data);
+} catch (error) {
+  console.error(error);
+}
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
+    <img
+      alt="Vue logo"
+      class="logo"
+      src="./assets/logo.svg"
+      width="125"
+      height="125"
+    />
   </header>
 
-  <main>
-    <TheWelcome />
-  </main>
+  <main></main>
 </template>
 
 <style scoped>
