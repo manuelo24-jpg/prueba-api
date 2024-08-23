@@ -4,6 +4,7 @@ import axios from "axios";
 
 const data = ref([]);
 const errorMessage = ref("");
+const selectedItem = ref(null);
 
 const options = {
   method: "GET",
@@ -24,6 +25,10 @@ onMounted(async () => {
     errorMessage.value = error.message;
   }
 });
+
+const selectItem = (item) => {
+  selectedItem.value = item;
+};
 </script>
 <template>
   <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
@@ -36,6 +41,7 @@ onMounted(async () => {
         <th>Ciudad</th>
         <th>Latitud</th>
         <th>Longitud</th>
+        <th>Detalles</th>
       </tr>
     </thead>
     <tbody>
@@ -46,11 +52,20 @@ onMounted(async () => {
         <td>{{ item.location.city }}</td>
         <td>{{ item.location.lat }}</td>
         <td>{{ item.location.lng }}</td>
+        <td><button @click="selectItem(item)">Ver Detalles</button></td>
       </tr>
     </tbody>
   </table>
+  <div v-if="selectedItem" class="details">
+    <h3>Detalles del Elemento Seleccionado</h3>
+    <p><strong>Título:</strong> {{ selectedItem.title }}</p>
+    <p><strong>Subtítulo:</strong> {{ selectedItem.subtitle }}</p>
+    <p><strong>Nombre:</strong> {{ selectedItem.location.name }}</p>
+    <p><strong>Ciudad:</strong> {{ selectedItem.location.city }}</p>
+    <p><strong>Latitud:</strong> {{ selectedItem.location.lat }}</p>
+    <p><strong>Longitud:</strong> {{ selectedItem.location.lng }}</p>
+  </div>
 </template>
-
 <style scoped>
 .styled-table {
   width: 100%;
@@ -77,8 +92,35 @@ onMounted(async () => {
 .styled-table tbody tr:last-of-type {
   border-bottom: 2px solid #009879;
 }
+.details-button {
+  background-color: #009879;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+.details-button:hover {
+  background-color: #007f63;
+}
 .error-message {
   color: red;
   font-weight: bold;
+}
+.details {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #dddddd;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.details h3 {
+  margin-top: 0;
+  color: #009879;
+}
+.details p {
+  margin: 5px 0;
 }
 </style>
