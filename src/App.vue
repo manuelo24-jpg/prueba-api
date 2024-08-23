@@ -1,10 +1,12 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import axios from "axios";
 
 const data = ref([]);
 const errorMessage = ref("");
 const selectedItem = ref(null);
+const currentPage = ref(1);
+const itemsPerPage = ref(5);
 
 const options = {
   method: "GET",
@@ -29,6 +31,28 @@ onMounted(async () => {
 const selectItem = (item) => {
   selectedItem.value = item;
 };
+
+const paginatedData = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return data.value.slice(start, end);
+});
+
+const totalPages = computed(() => {
+  return Math.ceil(data.value.length / itemsPerPage.value);
+});
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
 </script>
 <template>
   <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
@@ -45,17 +69,28 @@ const selectItem = (item) => {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="item in data" :key="item.location.pk">
+      <tr v-for="item in paginatedData" :key="item.location.pk">
         <td>{{ item.title }}</td>
         <td>{{ item.subtitle }}</td>
         <td>{{ item.location.name }}</td>
         <td>{{ item.location.city }}</td>
         <td>{{ item.location.lat }}</td>
         <td>{{ item.location.lng }}</td>
-        <td><button @click="selectItem(item)">Ver Detalles</button></td>
+        <td>
+          <button @click="selectItem(item)" class="details-button">
+            Ver Detalles
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>
+  <div class="pagination">
+    <button @click="prevPage" :disabled="currentPage === 1">Anterior</button>
+    <span>Página {{ currentPage }} de {{ totalPages }}</span>
+    <button @click="nextPage" :disabled="currentPage === totalPages">
+      Siguiente
+    </button>
+  </div>
   <div v-if="selectedItem" class="details">
     <h3>Detalles del Elemento Seleccionado</h3>
     <p><strong>Título:</strong> {{ selectedItem.title }}</p>
@@ -99,7 +134,6 @@ const selectItem = (item) => {
   padding: 10px 20px;
   cursor: pointer;
   border-radius: 5px;
-  margin-left: 10px;
 }
 .details-button:hover {
   background-color: #007f63;
@@ -122,5 +156,27 @@ const selectItem = (item) => {
 }
 .details p {
   margin: 5px 0;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+.pagination button {
+  background-color: #009879;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin: 0 5px;
+}
+.pagination button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+.pagination span {
+  margin: 0 10px;
 }
 </style>
