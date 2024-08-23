@@ -55,53 +55,73 @@ const prevPage = () => {
 };
 </script>
 <template>
-  <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
-  <table v-else class="styled-table">
-    <thead>
-      <tr>
-        <th>Título</th>
-        <th>Subtítulo</th>
-        <th>Nombre</th>
-        <th>Ciudad</th>
-        <th>Latitud</th>
-        <th>Longitud</th>
-        <th>Detalles</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="item in paginatedData" :key="item.location.pk">
-        <td>{{ item.title }}</td>
-        <td>{{ item.subtitle }}</td>
-        <td>{{ item.location.name }}</td>
-        <td>{{ item.location.city }}</td>
-        <td>{{ item.location.lat }}</td>
-        <td>{{ item.location.lng }}</td>
-        <td>
-          <button @click="selectItem(item)" class="details-button">
-            Ver Detalles
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="pagination">
-    <button @click="prevPage" :disabled="currentPage === 1">Anterior</button>
-    <span>Página {{ currentPage }} de {{ totalPages }}</span>
-    <button @click="nextPage" :disabled="currentPage === totalPages">
-      Siguiente
-    </button>
-  </div>
-  <div v-if="selectedItem" class="details">
-    <h3>Detalles del Elemento Seleccionado</h3>
-    <p><strong>Título:</strong> {{ selectedItem.title }}</p>
-    <p><strong>Subtítulo:</strong> {{ selectedItem.subtitle }}</p>
-    <p><strong>Nombre:</strong> {{ selectedItem.location.name }}</p>
-    <p><strong>Ciudad:</strong> {{ selectedItem.location.city }}</p>
-    <p><strong>Latitud:</strong> {{ selectedItem.location.lat }}</p>
-    <p><strong>Longitud:</strong> {{ selectedItem.location.lng }}</p>
+  <div class="container">
+    <div class="tableContainer">
+      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+      <table v-else class="styled-table">
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Subtítulo</th>
+            <th>Nombre</th>
+            <th>Ciudad</th>
+            <th>Latitud</th>
+            <th>Longitud</th>
+            <th>Detalles</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in paginatedData" :key="item.location.pk">
+            <td>{{ item.title }}</td>
+            <td>{{ item.subtitle }}</td>
+            <td>{{ item.location.name }}</td>
+            <td>{{ item.location.city }}</td>
+            <td>{{ item.location.lat }}</td>
+            <td>{{ item.location.lng }}</td>
+            <td>
+              <button @click="selectItem(item)" class="details-button">
+                Ver Detalles
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pagination">
+        <button @click="prevPage" :disabled="currentPage === 1">
+          Anterior
+        </button>
+        <span>Página {{ currentPage }} de {{ totalPages }}</span>
+        <button @click="nextPage" :disabled="currentPage === totalPages">
+          Siguiente
+        </button>
+      </div>
+    </div>
+    <div v-if="selectedItem" class="details">
+      <h3>Detalles del Elemento Seleccionado</h3>
+      <p><strong>Título:</strong> {{ selectedItem.title }}</p>
+      <p><strong>Subtítulo:</strong> {{ selectedItem.subtitle }}</p>
+      <p><strong>Nombre:</strong> {{ selectedItem.location.name }}</p>
+      <p><strong>Ciudad:</strong> {{ selectedItem.location.city }}</p>
+      <p><strong>Latitud:</strong> {{ selectedItem.location.lat }}</p>
+      <p><strong>Longitud:</strong> {{ selectedItem.location.lng }}</p>
+    </div>
   </div>
 </template>
 <style scoped>
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-direction: row;
+}
+.tableContainer {
+  max-width: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+}
 .styled-table {
   width: 100%;
   border-collapse: collapse;
@@ -134,6 +154,7 @@ const prevPage = () => {
   padding: 10px 20px;
   cursor: pointer;
   border-radius: 5px;
+  gap: 5px;
 }
 .details-button:hover {
   background-color: #007f63;
