@@ -1,63 +1,84 @@
 <script setup>
+import { ref, onMounted } from "vue";
 import axios from "axios";
+
+const data = ref([]);
+const errorMessage = ref("");
 
 const options = {
   method: "GET",
-  url: "https://api-football-v1.p.rapidapi.com/v2/odds/league/865927/bookmaker/5",
-  params: { page: "2" },
+  url: "https://instagram243.p.rapidapi.com/searchlocation/paris",
   headers: {
     "x-rapidapi-key": "7857f3e008mshdbc29ebea76e69ep15fe69jsn9484898f9ab3",
-    "x-rapidapi-host": "api-football-v1.p.rapidapi.com",
+    "x-rapidapi-host": "instagram243.p.rapidapi.com",
   },
 };
 
-try {
-  const response = await axios.request(options);
-  console.log(response.data);
-} catch (error) {
-  console.error(error);
-}
+onMounted(async () => {
+  try {
+    const response = await axios.request(options);
+    console.log(response.data);
+    data.value = response.data.data;
+  } catch (error) {
+    console.error(error);
+    errorMessage.value = error.message;
+  }
+});
 </script>
-
 <template>
-  <header>
-    <img
-      alt="Vue logo"
-      class="logo"
-      src="./assets/logo.svg"
-      width="125"
-      height="125"
-    />
-  </header>
-
-  <main></main>
+  <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+  <table v-else class="styled-table">
+    <thead>
+      <tr>
+        <th>Título</th>
+        <th>Subtítulo</th>
+        <th>Nombre</th>
+        <th>Ciudad</th>
+        <th>Latitud</th>
+        <th>Longitud</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="item in data" :key="item.location.pk">
+        <td>{{ item.title }}</td>
+        <td>{{ item.subtitle }}</td>
+        <td>{{ item.location.name }}</td>
+        <td>{{ item.location.city }}</td>
+        <td>{{ item.location.lat }}</td>
+        <td>{{ item.location.lng }}</td>
+      </tr>
+    </tbody>
+  </table>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 18px;
+  text-align: left;
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.styled-table thead tr {
+  background-color: #009879;
+  color: #ffffff;
+  text-align: left;
 }
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.styled-table th,
+.styled-table td {
+  padding: 12px 15px;
+}
+.styled-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+.styled-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+.styled-table tbody tr:last-of-type {
+  border-bottom: 2px solid #009879;
+}
+.error-message {
+  color: red;
+  font-weight: bold;
 }
 </style>
