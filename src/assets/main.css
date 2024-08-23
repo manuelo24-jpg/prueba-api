@@ -1,7 +1,6 @@
 @import './base.css';
 
 #app {
-  max-width: 2080px;
   display: flex;
   justify-content: center; 
   align-items: center; 
